@@ -1,0 +1,5 @@
+import nltk, pprint
+
+
+with open('./reut2-021.sgm','r') as f:
+    list1 = f.read().splitlines()
