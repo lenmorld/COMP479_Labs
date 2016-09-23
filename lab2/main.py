@@ -5,12 +5,16 @@ from nltk.stem.porter import *
 
 from normalize import *
 from sgml_parser import *
+from counter import *
+
+file1 = "./reut2-021.sgm"
 
 # words = ['cat','dog','sleep','the']
 
 empty_words = ['',' ']
+count_body = count_body(file1)   # number of body tags in the file
+docs = extract(open(file1), count_body)
 
-docs = extract(open("./reut2-021.sgm"))
 doc_ctr = 1
 
 in_index = {}

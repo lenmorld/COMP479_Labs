@@ -34,11 +34,11 @@ class FoundBody(Exception):
 class ExtractText(sgmllib.SGMLParser):
 
     contents = {}
-    reuterAll = 3   # number of body inside the file
     reuterCtr = 0
 
-    def __init__(self, verbose=0):
+    def __init__(self, count_body, verbose=0):
         sgmllib.SGMLParser.__init__(self, verbose)
+        self.count_body = count_body        # this is the number of body's in the file
         self.body = self.data = None
 
     def handle_data(self, data):
@@ -62,17 +62,17 @@ class ExtractText(sgmllib.SGMLParser):
         self.reuterCtr += 1
         print self.reuterCtr
         
-        if self.reuterCtr == self.reuterAll:   
+        if self.reuterCtr == self.count_body:      # if number of body's in file reached, finish parsing
             raise FoundBody # abort parsing!
 
-def extract(file):
+def extract(file, count_body):
     dict_term = {}
     ctr = 0
     
     while True:     
     
         # extract title from an HTML/SGML stream
-        b = ExtractText()
+        b = ExtractText(count_body)
 
 ##        if p is None:
 ##            break
