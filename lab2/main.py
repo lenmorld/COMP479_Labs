@@ -33,7 +33,7 @@ for title,doc in docs.iteritems():
     ## normalize words
     normalized_words = normalize(terms)
     print("NORMALIZE---------------------------")
-    #pprint.pprint(normalized_words)
+    pprint.pprint(normalized_words)
 
     ## stemming
     stemmer = PorterStemmer()
@@ -42,7 +42,7 @@ for title,doc in docs.iteritems():
     ## build inverted index, docID would stand for each Reuters doc
 
     print("STEMMER---------------------------")
-    #pprint.pprint(tokens)
+    pprint.pprint(tokens)
 
     # put in index
     print("INVERTED INDEX---------------------------")
