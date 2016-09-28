@@ -1,6 +1,0 @@
-
-# token_stream should be a (term, docID) pair
-def SPIMI(token_stream):
-    output_file = newfile
-    dictionary = 
-    
