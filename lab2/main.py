@@ -42,6 +42,9 @@ def SPIMI(token_stream):
             # TEST #
             pprint.pprint(dictionary)
             x = raw_input("PAUSE")
+
+            ########## TODO ############
+            #### nothing working beyond this point at SPIMI #####
             
         # at this point, we have an inverted index for a block
         sorted_terms = sort_terms(dictionary)
