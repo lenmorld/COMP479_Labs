@@ -69,8 +69,6 @@ with open('file1.bin','rb') as file1:
     data1 = pickle.load(file1)
     data2 = pickle.load(file1)
 
-print(type(file1))
-print(file1.name)
 pprint.pprint(data1)
 pprint.pprint(data2)
 
