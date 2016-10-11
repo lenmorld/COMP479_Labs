@@ -61,24 +61,31 @@ class ExtractText(sgmllib.SGMLParser):
         self.contents[self.title] = self.body
         self.reuterCtr += 1
         print self.reuterCtr
-        
+
         if self.reuterCtr == self.count_body:      # if number of body's in file reached, finish parsing
             raise FoundBody # abort parsing!
 
-def extract(file, count_body):
+ # number of body tags in the file
+def count_body(file1):
+    f = open(file1.name,'r')
+    total = 0
+    for line in f:
+        if "<BODY>" in line:
+            total += 1
+    f.close()
+    return total
+
+def extract(file):
+    countbody = count_body(file)
     dict_term = {}
     ctr = 0
-    
-    while True:     
-    
-        # extract title from an HTML/SGML stream
-        b = ExtractText(count_body)
 
-##        if p is None:
-##            break
-##        if b is None:
-##            break
-##        
+
+    while True:
+
+        # extract title and body from an HTML/SGML stream
+        b = ExtractText(countbody)
+
         try:
             while 1:
                 # read small chunks
@@ -97,11 +104,5 @@ def extract(file, count_body):
             ctr += 1
     return docs
 
-
-
 #docs = extract(open("./reut2-021.sgm"))
 #pprint.pprint(docs)
-
-
-
-
