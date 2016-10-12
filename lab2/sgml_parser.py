@@ -3,7 +3,6 @@ import string
 import re
 import pprint
 
-
 # http://www.programcreek.com/python/example/837/sgmllib.SGMLParser
 # http://effbot.org/librarybook/sgmllib.htm
 
@@ -80,9 +79,7 @@ def extract(file):
     dict_term = {}
     ctr = 0
 
-
     while True:
-
         # extract title and body from an HTML/SGML stream
         b = ExtractText(countbody)
 
