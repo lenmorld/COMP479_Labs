@@ -1,6 +1,5 @@
 import nltk
 import json
-from nltk.stem.porter import *
 import sys
 
 from spimi_methods import *
@@ -11,6 +10,9 @@ import merge
 
 
 ####### Memory management ########
+
+# 8192 -> 2 blocks
+memory_size = 10000
 block_size = 8192
 doc_path = './docs'
 
@@ -61,16 +63,24 @@ tokens_list = []
 # do for each file in the collection
 for title,doc in docs.iteritems():
     ## tokenize SGM doc to a list
+
+    #-- BEFORE: simplest tokenizer, no filtering --
     terms = nltk.word_tokenize (doc)
+
+    #-- AFTER: filters out punctuations
+    # tokens = nltk.wordpunct_tokenize(doc)    # <-- SHIT THIS does case-folding too
+    # text = nltk.Text(tokens)
+    # terms = [w.lower() for w in text if w.isalnum()]
+
+    # COMPRESSION 1
+    # terms = compress.remove_numbers(terms)
 
     # --- no compression for now -----
     #terms = compress.normalize(terms)
     #terms = compress.p_stemmer(terms)
 
-    tokens = terms
-
-    for token in tokens:
-        token_obj = {"term":token,"docID":doc_ctr}
+    for term in terms:
+        token_obj = {"term":term,"docID":doc_ctr}
         tokens_list.append(token_obj)
 
     print("finished doc" + str(doc_ctr))
