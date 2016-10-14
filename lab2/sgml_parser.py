@@ -41,7 +41,7 @@ class ExtractText(sgmllib.SGMLParser):
         self.body = string.join(self.data, "")
         self.contents[self.title] = self.body
         self.reuterCtr += 1
-        print self.reuterCtr
+        # print self.reuterCtr
 
         if self.reuterCtr == self.count_body:      # if number of body's in file reached, finish parsing
             raise FoundBody # abort parsing!

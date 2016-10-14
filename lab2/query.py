@@ -80,6 +80,13 @@ def read_index_into_memory(index_file):
     # print(len(index))
     return index
 
+q1= QueryObject('./blocks/index.txt')
+
+while True:
+    query = raw_input("Enter query separated by AND | OR:")
+    result = q1.run_query(query)
+    print(query + '->')
+    print(result)
 
 
 # run_query('./blocks/index.txt', 'a')

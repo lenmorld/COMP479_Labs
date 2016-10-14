@@ -13,7 +13,8 @@ import query
 
 # 8192 -> 2 blocks
 memory_size = 10000
-block_size = 4096
+##block_size = 4096
+block_size = 2621440    # whole corpus 25MB/10 blocks = 2.5 MB
 num_docs = 0
 
 """
@@ -48,7 +49,7 @@ def SPIMI(token_stream):
 
         # if it becomes too big for the block size, or it is the last document (indicated by the last token)
         if (sys.getsizeof(dictionary) > block_size) or (token_ctr >= token_count) :
-##            print(str(sys.getsizeof(dictionary)))
+            print(str(sys.getsizeof(dictionary)))
 ##            x = raw_input("PAUSE")
 ##            pprint.pprint(dictionary)
             sorted_dictionary = sort_terms(dictionary)
