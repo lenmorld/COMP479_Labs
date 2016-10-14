@@ -4,25 +4,24 @@ import sys
 
 from spimi_methods import *
 import filestuff
-import sgml_parser
 import compress
 import merge
-
+import query
 
 ####### Memory management ########
 
 # 8192 -> 2 blocks
 memory_size = 10000
 block_size = 8192
-doc_path = './docs'
 
-##### file management ##############
-# file1 = "./docs/reut2-021.sgm"
-reuter_files = filestuff.get_files(doc_path, '.sgm')
-docs = {}
-for reuter_file in reuter_files:
-    new_docs = sgml_parser.extract(open(reuter_file))
-    docs = dict(docs.items() + new_docs.items())
+
+# ##### file management ##############
+# # file1 = "./docs/reut2-021.sgm"
+# reuter_files = filestuff.get_files(doc_path, '.sgm')
+# docs = {}
+# for reuter_file in reuter_files:
+#     new_docs = sgml_parser.extract(open(reuter_file))
+#     docs = dict(docs.items() + new_docs.items())
 
 """
 SPIMI()
@@ -59,6 +58,8 @@ def SPIMI(token_stream):
 
 doc_ctr = 1
 tokens_list = []
+doc_path = './docs'
+docs = filestuff.get_reuters(doc_path)
 
 # do for each file in the collection
 for title,doc in docs.iteritems():
@@ -87,9 +88,29 @@ for title,doc in docs.iteritems():
     doc_ctr += 1    # next doc
 
 spimi_files = SPIMI(tokens_list)
-
 print(spimi_files)
 
 ############ MERGING ##################
 index_file = merge.block_merge(spimi_files)
 print(index_file)
+
+
+########### Query ####################
+
+# put query loop here
+# query1 = 'the'
+# results = query.run_query(index_file, query1)
+
+q1= query.QueryObject(index_file)
+
+while True:
+    print("Enter query separated by AND | OR:")
+    query = raw_input(">")
+    result = q1.run_query(query)
+    print(query + '->')
+    print(result)
+# q1.run_query('a')
+# q1.run_query('by')
+# q1.run_query('but')
+# q1.run_query('a AND by AND but')
+# q1.run_query('a OR by OR but')

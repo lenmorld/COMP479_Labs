@@ -11,7 +11,7 @@ import pprint
 
 
 def remove_numbers(words):
-    processed_words = [w for w in words if w.isalpha() ]
+    processed_words = [w for w in words if not w.isdigit() ]
     return processed_words
 
 def remove_stop_words(words):
@@ -23,8 +23,6 @@ def remove_stop_words(words):
 def remove_non_words():
     pass
     # empty_words = ['',' ','``','.',"'s",',','\x03',"''"]
-
-
 
 def normalize(words):
     pass
