@@ -11,7 +11,7 @@ import string
 
 
 def remove_weird_things(words):         # remove punctuations, line breaks, whitespace, etc
-    punctuations = '!"#$%&\'()*+,./:;<=>?@[\\]^_`{|}~'
+    punctuations = '!"#$%&\'()*+,./:;<=>?@[\\]^_`{|}~'
 
     processed_words = [ t.translate(None, punctuations) for t in words ]  # remove punctuations
     garbage_words = ['','s']

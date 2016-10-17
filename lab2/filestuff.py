@@ -23,7 +23,6 @@ def get_reuters(doc_path):
     return docs
 
 
-
 def delete_content(f_name):
     with open(f_name, "w"):
         pass
