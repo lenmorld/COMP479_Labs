@@ -1,11 +1,10 @@
-from collections import OrderedDict
-import ast
 import argparse
+import filestuff
 
 class QueryObject:
 
     def __init__(self, index_file):
-        self.index  = read_index_into_memory(index_file)
+        self.index, self.postings_count  = filestuff.read_index_into_memory(index_file)
 
     @staticmethod
     def query_list(index, term_list, op):
@@ -62,52 +61,55 @@ class QueryObject:
 
 
 
-
     def run_query(self, query):
         index = self.index
         q_split = query.split()
+        err = ''
 
         if len(q_split) == 1:   # single word query
             try:
                 result = index[query]
             except KeyError:
-                result = "Term not found"
+                result = list()
+                err = "term not found"
         else:                   # multiple query, separated by AND | OR
-            if 'AND' in query:
-                # multiple words query - cat AND dog
-                try:
-                    q_terms = query.split(' AND ')
-                    result = QueryObject.query_list(index, q_terms, 'AND')
-                except KeyError:
-                    result = "one or all of the terms not found"
-            elif 'OR' in query:
+            if 'OR' in query:
                 # multiple words query - cat OR dog
                 q_terms = query.split(' OR ')
                 result = QueryObject.query_list(index, q_terms, 'OR')
-            else:
-                error_message = '''
-                Unrecognized query:
-                    usage: [term1]
-                           [term1 AND term2 AND ...]
-                           [term1 OR term2 OR ...]
-                           [term1 OR term2 OR ...]
-                '''
-                return error_message
+            # elif 'AND' in query:
+            else:       # default to AND if seperated by spaces or explicit AND
+                if 'AND' in query:
+                    q_terms = query.split(' AND ')
+                else:
+                    q_terms = query.split()
+                try:
+                    result = QueryObject.query_list(index, q_terms, 'AND')
+                except KeyError:
+                    result = list()
+                    err = "one or all of the terms not found"
+            # else:
+            #     err = '''
+            #     Unrecognized query:
+            #         usage: [term1]
+            #                [term1 AND term2 AND ...]
+            #                [term1 OR term2 OR ...]
+            #                [term1 OR term2 OR ...]
+            #     '''
 
         # print(query + '->')
         # print(result)
-        return result
+        return result, err
 
-def read_index_into_memory(index_file):
-    index = OrderedDict()
-    index_f = open(index_file)
-    for line in index_f:
-        t_split = line.split(':')
-        term = t_split[0]
-        postings = ast.literal_eval(t_split[1])         # convert postings string to list e.g. '[7,9]\n' -> [7,9]
-        index.update({term:postings})
-    print("Term count: " + str(len(index)))
-    return index
+
+def prepare_query():
+    result, err = q1.run_query(query)
+    print(query + '->')
+    if len(result) > 1:
+        print(result)
+        print(str(len(result)) + " found " )
+    else:
+        print(err)
 
 ############# MAIN ######################
 parser = argparse.ArgumentParser(description='query', add_help=False)
@@ -121,19 +123,10 @@ q1= QueryObject('./blocks/index.txt')
 # otherwise, loop to allow user to run queries
 if args.query:
     query = args.query
-    result = q1.run_query(query)
-    print(query + '->')
-    print(result)
+    prepare_query()
+
 else:
     while True:
-        query = raw_input("Enter query separated by AND | OR:")
-        result = q1.run_query(query)
-        print(query + '->')
-        print(result)
-
-
-# run_query('./blocks/index.txt', 'a')
-# run_query('./blocks/index.txt', 'by')
-# run_query('./blocks/index.txt', 'but')
-# run_query('./blocks/index.txt', 'a AND by AND but')
-# run_query('./blocks/index.txt', 'a OR by OR but')
+        print("Enter query separated by AND | OR:")
+        query = raw_input()
+        prepare_query()

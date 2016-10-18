@@ -1,6 +1,5 @@
 import nltk
-# import json
-import pprint
+# import pprint
 import argparse
 
 import filestuff
@@ -11,9 +10,14 @@ import compress
 
 ####### Memory management ########
 memory_size = 1000000000
-default_block_size = 2621440    # whole corpus 25MB/10 blocks = 2.5 MB
+default_block_size = 1315000    # whole corpus 26.3 MB/10 blocks = 2.63 MB
 
-#################### MAIN ###########################
+# good values 2630000-> ~ 5 blocks
+#             1315000-> ~9 blocks
+#              657500-> ~ 20 blocks
+              
+
+# parse arguments from command-line
 parser = argparse.ArgumentParser(description='build index', add_help=False)
 parser.add_argument("block_size")
 args = parser.parse_args()
@@ -24,68 +28,47 @@ else:
     block_size = default_block_size
 
 print ("Using block size " + str(block_size))
-# x = raw_input("Pause")
+
+
+# get all reuters docs and accumulate all term, docID pairs
 
 doc_ctr = 1
 tokens_list = []
 doc_path = './docs'
 docs = filestuff.get_reuters(doc_path)
+index_file = './blocks/index.txt'
 
 # do for each file in the collection
 for title,doc in docs.iteritems():
-    ## tokenize SGM doc to a list
+    terms = nltk.word_tokenize (doc)                      # tokenize SGM doc to a list
+    # COMPRESSION techniques
+    terms = compress.remove_weird_things(terms)           #1 remove puntuations, escape characters, etc
+    terms = compress.remove_numbers(terms)              #2 remove numbers
+    terms = compress.case_folding(terms)                #3 convert all to lowercase
 
-    #-- BEFORE: simplest tokenizer, no filtering --
-    terms = nltk.word_tokenize (doc)
-
-    terms = compress.remove_weird_things(terms)           #1
-    # terms = compress.remove_numbers(terms)              #2
-    # terms = compress.case_folding(terms)                #3
-    # terms = compress.remove_stop_words(terms)           #4
-
+    # collect all term,docID pairs to a list
     for term in terms:
         token_obj = {"term":term,"docID":doc_ctr}
         tokens_list.append(token_obj)
 
-    # print("finished doc" + str(doc_ctr))
     doc_ctr += 1    # next doc
 
-# num_docs = doc_ctr
+# tokens_list = compress.remove_stop_words(tokens_list, 30)       # 4 remove 30 most common words
+tokens_list = compress.remove_stop_words(tokens_list, 150)      # 5 remove 30 most common words
 
-##pprint.pprint(tokens_list)
-##x = raw_input("pause")
-##tokens_list = compress.case_folding(tokens_list)        #3
-##pprint.pprint(tokens_list)
-##x = raw_input("pause")
-
-
-####### STEMMING ##########
-# TODO #
-
+########## SPIMI ####################
 spimi_files = spimi.SPIMI(tokens_list, block_size)
 print(spimi_files)
 
 ########## MERGING ##################
-index_file = spimi.block_merge(spimi_files)
+index_file = spimi.block_merge(spimi_files, index_file)
 #print(index_file)
 
-
-########### Query ####################
-# put query loop here
-# query1 = 'the'
-# results = query.run_query(index_file, query1)
-
-# q1= query.QueryObject(index_file)
-
-# while True:
-#     query = raw_input("Enter query separated by AND | OR:")
-#     print(query + '->')
-#     print(result)
+index, postings_count = filestuff.read_index_into_memory(index_file)
+print("Term count: " + str(len(index)))
 
 
 
-# q1.run_query('a')
-# q1.run_query('by')
-# q1.run_query('but')
-# q1.run_query('a AND by AND but')
-# q1.run_query('a OR by OR but')
+######## testing ##############
+
+
